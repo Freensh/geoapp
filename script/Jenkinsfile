@@ -11,6 +11,7 @@ pipeline {
        SONAQUBE_CRED = 'sonar-cred'
        SONAQUBE_INSTALLATION = 'sonar-server'
        APP_NAME = 'geoapp'
+       QG_CONDITION = false
   
        }
 
@@ -38,6 +39,13 @@ pipeline {
               sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=${APP_NAME} -Dsonar.projectKey=${APP_NAME} \
                    -Dsonar.java.binaries=. '''
 }
+            }
+        }
+        stage('Quality Gate Check'){
+            steps{
+              script{
+                 waitForQualityGate abortPipeline: "${QG_CONDITION}", credentialsId: "${SONAQUBE_CRED}" 
+              }
             }
         }
        /*
